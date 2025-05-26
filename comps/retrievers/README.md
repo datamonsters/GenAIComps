@@ -41,7 +41,3 @@ For details, please refer to this [readme](src/README_neo4j.md)
 ## Retriever Microservice with Pathway
 
 For details, please refer to this [readme](src/README_pathway.md)
-
-## Retriever Microservice with MariaDB Vector
-
-For details, please refer to this [readme](src/README_mariadb.md)

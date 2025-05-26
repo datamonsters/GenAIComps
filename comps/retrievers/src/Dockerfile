@@ -9,9 +9,7 @@ RUN apt-get update -y && apt-get install -y --no-install-recommends --fix-missin
     libcairo2 \
     libgl1-mesa-glx \
     libglib2.0-0 \
-    libjemalloc-dev \
-    libmariadb-dev \
-    build-essential
+    libjemalloc-dev
 
 RUN useradd -m -s /bin/bash user && \
     mkdir -p /home/user && \
