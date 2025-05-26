@@ -6,19 +6,18 @@ FROM python:3.11-slim
 ARG ARCH="cpu"
 
 RUN apt-get update -y && apt-get install -y --no-install-recommends --fix-missing \
-    libgl1-mesa-glx \
-    libjemalloc-dev \
     libcairo2 \
+    libgl1-mesa-glx \
     libglib2.0-0 \
-    vim
+    libjemalloc-dev \
+    libmariadb-dev \
+    build-essential
 
 RUN useradd -m -s /bin/bash user && \
     mkdir -p /home/user && \
     chown -R user /home/user/
 
 COPY comps /home/user/comps
-
-USER user
 
 RUN pip install --no-cache-dir --upgrade pip setuptools && \
     if [ ${ARCH} = "cpu" ]; then \
@@ -27,10 +26,12 @@ RUN pip install --no-cache-dir --upgrade pip setuptools && \
         PIP_EXTRA_INDEX_URL=""; \
     fi && \
     pip install --no-cache-dir torch torchvision ${PIP_EXTRA_INDEX_URL} && \
-    pip install --no-cache-dir ${PIP_EXTRA_INDEX_URL} -r /home/user/comps/retrievers/src/requirements.txt && \
-    pip install opentelemetry-api==1.27.0 opentelemetry-exporter-otlp==1.27.0 opentelemetry-sdk==1.27.0
+    pip install --no-cache-dir ${PIP_EXTRA_INDEX_URL} -r /home/user/comps/retrievers/src/requirements.txt
 
 ENV PYTHONPATH=$PYTHONPATH:/home/user
+
+USER user
+ENV NLTK_DATA=/home/user/nltk_data
 
 WORKDIR /home/user/comps/retrievers/src
 

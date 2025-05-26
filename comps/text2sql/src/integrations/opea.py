@@ -36,7 +36,7 @@ TGI_LLM_ENDPOINT = os.environ.get("TGI_LLM_ENDPOINT")
 
 llm = HuggingFaceEndpoint(
     endpoint_url=TGI_LLM_ENDPOINT,
-    task="text-generation",
+    task="text-generation",`
     **generation_params,
 )
 
