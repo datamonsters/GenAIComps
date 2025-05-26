@@ -21,8 +21,7 @@ COPY comps /home/user/comps
 # Install requirements and optimum habana
 RUN pip install --no-cache-dir --upgrade pip setuptools && \
     pip install --no-cache-dir -r /home/user/comps/third_parties/llava/src/requirements.txt && \
-    pip install --no-cache-dir optimum[habana]&& \
-    pip install --no-cache-dir --upgrade Jinja2
+    pip install --no-cache-dir optimum[habana]
 
 ENV PYTHONPATH=$PYTHONPATH:/home/user
 USER user

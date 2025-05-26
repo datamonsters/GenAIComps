@@ -1,7 +1,7 @@
 # Copyright (C) 2024 Intel Corporation
 # SPDX-License-Identifier: Apache-2.0
 
-from enum import Enum, auto
+from enum import Enum
 
 
 class ServiceRoleType(Enum):
@@ -92,11 +92,3 @@ class MicroServiceEndpoint(Enum):
 
     def __str__(self):
         return self.value
-
-
-class MCPFuncType(Enum):
-    """The enum of a MCP function type."""
-
-    TOOL = auto()
-    RESOURCE = auto()
-    PROMPT = auto()

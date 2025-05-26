@@ -60,7 +60,3 @@ For details, please refer to this [readme](src/README_neo4j_llamaindex.md)
 ## Dataprep Microservice for financial domain data
 
 For details, please refer to this [readme](src/README_finance.md)
-
-## Dataprep Microservice with MariaDB Vector
-
-For details, please refer to this [readme](src/README_mariadb.md)
