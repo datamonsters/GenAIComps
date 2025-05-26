@@ -6,8 +6,6 @@ import os
 import time
 from typing import Union
 
-from integrations.arangodb import OpeaArangoRetriever
-
 # import for retrievers component registration
 from integrations.elasticsearch import OpeaElasticsearchRetriever
 from integrations.milvus import OpeaMilvusRetriever
@@ -37,7 +35,6 @@ from comps import (
 from comps.cores.proto.api_protocol import (
     ChatCompletionRequest,
     RetrievalRequest,
-    RetrievalRequestArangoDB,
     RetrievalResponse,
     RetrievalResponseData,
 )
@@ -61,8 +58,8 @@ loader = OpeaComponentLoader(
     port=7000,
 )
 @register_statistics(names=["opea_service@retrievers"])
-async def retrieve_docs(
-    input: Union[EmbedDoc, EmbedMultimodalDoc, RetrievalRequest, RetrievalRequestArangoDB, ChatCompletionRequest],
+async def ingest_files(
+    input: Union[EmbedDoc, EmbedMultimodalDoc, RetrievalRequest, ChatCompletionRequest]
 ) -> Union[SearchedDoc, SearchedMultimodalDoc, RetrievalResponse, ChatCompletionRequest]:
     start = time.time()
 
@@ -84,8 +81,7 @@ async def retrieve_docs(
                         r.metadata["b64_img_str"] = [input.base64_image, r.metadata["b64_img_str"]]
                     else:
                         r.metadata["b64_img_str"] = input.base64_image
-                if r.metadata:
-                    metadata_list.append(r.metadata)
+                metadata_list.append(r.metadata)
                 retrieved_docs.append(TextDoc(text=r.page_content))
             result = SearchedMultimodalDoc(
                 retrieved_docs=retrieved_docs, initial_query=input.text, metadata=metadata_list

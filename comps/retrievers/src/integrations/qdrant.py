@@ -3,7 +3,6 @@
 
 
 import os
-from types import SimpleNamespace
 
 from haystack_integrations.components.retrievers.qdrant import QdrantEmbeddingRetriever
 from haystack_integrations.document_stores.qdrant import QdrantDocumentStore
@@ -27,7 +26,7 @@ class OpeaQDrantRetriever(OpeaComponent):
     def __init__(self, name: str, description: str, config: dict = None):
         super().__init__(name, ServiceType.RETRIEVER.name.lower(), description, config)
 
-        self.db_store, self.retriever = self._initialize_client()
+        self.retriever = self._initialize_client()
         health_status = self.check_health()
         if not health_status:
             logger.error("OpeaQDrantRetriever health check failed.")
@@ -44,7 +43,7 @@ class OpeaQDrantRetriever(OpeaComponent):
 
         retriever = QdrantEmbeddingRetriever(document_store=qdrant_store)
 
-        return qdrant_store, retriever
+        return retriever
 
     def check_health(self) -> bool:
         """Checks the health of the retriever service.
@@ -56,7 +55,7 @@ class OpeaQDrantRetriever(OpeaComponent):
             logger.info("[ check health ] start to check health of QDrant")
         try:
             # Check the status of the QDrant service
-            _ = self.db_store.client
+            _ = self.retriever.client
             logger.info("[ check health ] Successfully connected to QDrant!")
             return True
         except Exception as e:
@@ -76,14 +75,6 @@ class OpeaQDrantRetriever(OpeaComponent):
 
         search_res = self.retriever.run(query_embedding=input.embedding)["documents"]
 
-        # format result to align with the standard output in opea_retrievers_microservice.py
-        final_res = []
-        for res in search_res:
-            dict_res = res.meta
-            res_obj = SimpleNamespace(**dict_res)
-            final_res.append(res_obj)
-
         if logflag:
-            logger.info(f"[ similarity search ] search result: {final_res}")
-
-        return final_res
+            logger.info(f"[ similarity search ] search result: {search_res}")
+        return search_res

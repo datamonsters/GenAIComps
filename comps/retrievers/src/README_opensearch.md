@@ -21,7 +21,7 @@ pip install -r requirements.txt
 ```bash
 model=BAAI/bge-base-en-v1.5
 volume=$PWD/data
-docker run -d -p 6060:80 -v $volume:/data -e http_proxy=$http_proxy -e https_proxy=$https_proxy --pull always ghcr.io/huggingface/text-embeddings-inference:cpu-1.6 --model-id $model
+docker run -d -p 6060:80 -v $volume:/data -e http_proxy=$http_proxy -e https_proxy=$https_proxy --pull always ghcr.io/huggingface/text-embeddings-inference:cpu-1.5 --model-id $model
 ```
 
 ### 1.3 Verify the TEI Service
@@ -44,7 +44,6 @@ Please refer to this [readme](../../third_parties/opensearch/src/README.md).
 ```bash
 export TEI_EMBEDDING_ENDPOINT="http://${your_ip}:6060"
 export RETRIEVER_COMPONENT_NAME="OPEA_RETRIEVER_OPENSEARCH"
-export HUGGINGFACEHUB_API_TOKEN=${your_hf_token}
 python opea_retrievers_microservice.py
 ```
 

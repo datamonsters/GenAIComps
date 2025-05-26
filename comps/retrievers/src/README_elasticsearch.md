@@ -28,7 +28,7 @@ pip install -r requirements.txt
 ```bash
 model=BAAI/bge-base-en-v1.5
 volume=$PWD/data
-docker run -d -p 6060:80 -v $volume:/data -e http_proxy=$http_proxy -e https_proxy=$https_proxy --pull always ghcr.io/huggingface/text-embeddings-inference:cpu-1.6 --model-id $model
+docker run -d -p 6060:80 -v $volume:/data -e http_proxy=$http_proxy -e https_proxy=$https_proxy --pull always ghcr.io/huggingface/text-embeddings-inference:cpu-1.5 --model-id $model
 ```
 
 ### 1.3 Verify the TEI Service
@@ -50,7 +50,6 @@ Please refer to this [readme](../../third_parties/elasticsearch/src/README.md).
 
 ```bash
 export TEI_EMBEDDING_ENDPOINT="http://${your_ip}:6060"
-export HUGGINGFACEHUB_API_TOKEN=${your_hf_api_token}
 export RETRIEVER_COMPONENT_NAME="OPEA_RETRIEVER_ELASTICSEARCH"
 python opea_retrievers_microservice.py
 ```
@@ -65,7 +64,6 @@ export ES_CONNECTION_STRING="http://localhost:9200"
 export INDEX_NAME=${your_index_name}
 export TEI_EMBEDDING_ENDPOINT="http://${your_ip}:6060"
 export RETRIEVER_COMPONENT_NAME="OPEA_RETRIEVER_ELASTICSEARCH"
-export HUGGINGFACEHUB_API_TOKEN=${your_hf_api_token}
 ```
 
 ### 2.2 Build Docker Image
@@ -85,8 +83,7 @@ You can choose one as needed.
 ### 2.3 Run Docker with CLI (Option A)
 
 ```bash
-docker run -d --name="retriever-elasticsearch" -p 7000:7000 --ipc=host -e http_proxy=$http_proxy -e https_proxy=$https_proxy -e ES_CONNECTION_STRING=$ES_CONNECTION_STRING  -e INDEX_NAME=$INDEX_NAME -e TEI_EMBEDDING_ENDPOINT=${TEI_EMBEDDING_ENDPOINT}
--e HUGGINGFACEHUB_API_TOKEN=${HUGGINGFACEHUB_API_TOKEN} opea/retriever:latest
+docker run -d --name="retriever-elasticsearch" -p 7000:7000 --ipc=host -e http_proxy=$http_proxy -e https_proxy=$https_proxy -e ES_CONNECTION_STRING=$ES_CONNECTION_STRING  -e INDEX_NAME=$INDEX_NAME -e TEI_ENDPOINT=$TEI_ENDPOINT opea/retriever:latest
 ```
 
 ### 2.4 Run Docker with Docker Compose (Option B)

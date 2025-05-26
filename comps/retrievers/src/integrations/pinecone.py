@@ -5,15 +5,13 @@
 import os
 import time
 
-from fastapi import HTTPException
-from langchain_community.embeddings import HuggingFaceBgeEmbeddings, HuggingFaceInferenceAPIEmbeddings
-from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_community.embeddings import HuggingFaceBgeEmbeddings, HuggingFaceHubEmbeddings
 from langchain_pinecone import PineconeVectorStore
 from pinecone import Pinecone, ServerlessSpec
 
 from comps import CustomLogger, EmbedDoc, OpeaComponent, OpeaComponentRegistry, ServiceType
 
-from .config import EMBED_MODEL, HUGGINGFACEHUB_API_TOKEN, PINECONE_API_KEY, PINECONE_INDEX_NAME, TEI_EMBEDDING_ENDPOINT
+from .config import EMBED_MODEL, PINECONE_API_KEY, PINECONE_INDEX_NAME, TEI_EMBEDDING_ENDPOINT
 
 logger = CustomLogger("pinecone_retrievers")
 logflag = os.getenv("LOGFLAG", False)
@@ -43,27 +41,12 @@ class OpeaPineconeRetriever(OpeaComponent):
             # create embeddings using TEI endpoint service
             if logflag:
                 logger.info(f"[ init embedder ] TEI_EMBEDDING_ENDPOINT:{TEI_EMBEDDING_ENDPOINT}")
-            if not HUGGINGFACEHUB_API_TOKEN:
-                raise HTTPException(
-                    status_code=400,
-                    detail="You MUST offer the `HUGGINGFACEHUB_API_TOKEN` when using `TEI_EMBEDDING_ENDPOINT`.",
-                )
-            import requests
-
-            response = requests.get(TEI_EMBEDDING_ENDPOINT + "/info")
-            if response.status_code != 200:
-                raise HTTPException(
-                    status_code=400, detail=f"TEI embedding endpoint {TEI_EMBEDDING_ENDPOINT} is not available."
-                )
-            model_id = response.json()["model_id"]
-            embeddings = HuggingFaceInferenceAPIEmbeddings(
-                api_key=HUGGINGFACEHUB_API_TOKEN, model_name=model_id, api_url=TEI_EMBEDDING_ENDPOINT
-            )
+            embeddings = HuggingFaceHubEmbeddings(model=TEI_EMBEDDING_ENDPOINT)
         else:
             # create embeddings using local embedding model
             if logflag:
                 logger.info(f"[ init embedder ] LOCAL_EMBEDDING_MODEL:{EMBED_MODEL}")
-            embeddings = HuggingFaceEmbeddings(model_name=EMBED_MODEL)
+            embeddings = HuggingFaceBgeEmbeddings(model_name=EMBED_MODEL)
         return embeddings
 
     def _initialize_client(self) -> Pinecone:
