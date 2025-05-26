@@ -10,7 +10,6 @@ from integrations.arangodb import OpeaArangoRetriever
 
 # import for retrievers component registration
 from integrations.elasticsearch import OpeaElasticsearchRetriever
-from integrations.mariadb import OpeaMARIADBVectorRetriever
 from integrations.milvus import OpeaMilvusRetriever
 from integrations.neo4j import OpeaNeo4jRetriever
 from integrations.opensearch import OpeaOpensearchRetriever
